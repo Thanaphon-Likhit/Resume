@@ -1,429 +1,144 @@
-/*
-Resume Website (single-file React component)
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>เรซูเม่ — นาย ธนพนธ์ ลิขิตปัญญาวัฒน์</title>
+  <meta name="description" content="เรซูเม่ของ นาย ธนพนธ์ ลิขิตปัญญาวัฒน์" />
+  <style>
+    :root{--accent:#2563eb;--muted:#6b7280;--bg:#f7fafc}
+    *{box-sizing:border-box}
+    body{font-family:Inter,ui-sans-serif,system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;line-height:1.5;color:#0f172a;margin:0;background:var(--bg)}
+    .container{max-width:900px;margin:28px auto;padding:24px;background:#fff;border-radius:12px;box-shadow:0 6px 18px rgba(2,6,23,0.08)}
+    header{display:flex;gap:20px;align-items:center}
+    .avatar{width:110px;height:110px;border-radius:10px;background:linear-gradient(135deg,#e0f2fe,#fff);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent);font-size:20px}
+    h1{margin:0;font-size:24px}
+    .sub{color:var(--muted);margin-top:4px}
+    .actions{margin-left:auto;display:flex;gap:8px}
+    button{background:var(--accent);color:#fff;border:none;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:600}
+    button.outline{background:transparent;color:var(--accent);border:1px solid rgba(37,99,235,0.14)}
+    main{display:grid;grid-template-columns:1fr 320px;gap:24px;margin-top:20px}
+    section{background:#fff}
+    .card{padding:16px;border-radius:10px}
+    .section-title{font-weight:700;margin-bottom:10px;color:#111827}
+    .chip{display:inline-block;padding:6px 10px;border-radius:999px;background:#eef2ff;color:#3730a3;margin:6px 6px 0 0;font-size:13px}
+    .muted{color:var(--muted);font-size:14px}
+    .list{margin:0;padding:0;list-style:none}
+    li.item{padding:12px 0;border-bottom:1px dashed #eef2ff}
+    .meta{font-size:13px;color:var(--muted)}
+    /* Responsive */
+    @media (max-width:820px){main{grid-template-columns:1fr} .actions{margin-top:12px;}}
+    /* Print-friendly */
+    @media print{body{background:#fff} .container{box-shadow:none;border-radius:0} button{display:none}}
+  </style>
+</head>
+<body>
+  <div class="container" id="resume-root">
+    <header>
+      <div class="avatar" id="avatar">TN</div>
+      <div>
+        <h1 id="fullName">นาย ธนพนธ์ ลิขิตปัญญาวัฒน์</h1>
+        <div class="sub" id="role">นักศึกษา / ผู้สมัครฝึกงาน</div>
+        <div class="muted" id="contact">705/13 ถ.พิชัยรณรงค์สงคราม ต.ปากพรียว อ.เมือง จ.สระบุรี 18000 • 099-164-6545 • thanaphon.email@example.com</div>
+      </div>
+      <div class="actions">
+        <button id="downloadPdf">ดาวน์โหลด PDF</button>
+        <button class="outline" id="printBtn">พิมพ์</button>
+      </div>
+    </header>
 
-How to use:
-1. Create a new Vite React project (recommended):
-   npm create vite@latest resume-site -- --template react
-   cd resume-site
-   npm install
-
-2. Install Tailwind CSS (follow Tailwind docs) or set up your preferred styling.
-   Quick setup (Tailwind):
-   npm install -D tailwindcss postcss autoprefixer
-   npx tailwindcss init -p
-   // then configure tailwind.config.js and add @tailwind directives to index.css
-
-3. Replace src/App.jsx with this file's content. Run:
-   npm run dev
-
-4. To push to GitHub:
-   git init
-   git add .
-   git commit -m "Initial resume site"
-   gh repo create <repo-name> --public --source=. --remote=origin
-   git push -u origin main
-
-This component implements:
-- Editable resume form (personal info, summary, experience, education, skills)
-- Live preview on the right
-- Export/Print (uses window.print for PDF export)
-- Simple responsive layout styled with Tailwind classes
-
-Notes:
-- This is a single-file component for convenience. In a production app split into smaller components.
-- If you want a downloadable PDF with precise layout, consider adding html2pdf.js or jsPDF.
-*/
-
-import React, { useState } from 'react';
-
-const defaultData = {
-  personal: {
-    fullName: 'ชื่อ-นามสกุล / Full Name',
-    title: 'ตำแหน่งที่ต้องการ / Desired Position',
-    email: 'you@example.com',
-    phone: '099-999-9999',
-    location: 'จังหวัด, ประเทศ',
-    summary:
-      'สรุปสั้นๆ เกี่ยวกับตัวคุณ — ประสบการณ์สำคัญ ทักษะเด่น และเป้าหมายในการทำงาน',
-  },
-  experiences: [
-    {
-      id: Date.now(),
-      role: 'ตำแหน่ง — บริษัท',
-      company: 'บริษัท ตัวอย่าง',
-      start: '2023-01',
-      end: 'ปัจจุบัน',
-      details: 'อธิบายผลงาน/ความรับผิดชอบสำคัญ 2-3 ข้อ',
-    },
-  ],
-  education: [
-    {
-      id: Date.now() + 1,
-      degree: 'ปริญญาตรี สาขา',
-      school: 'มหาวิทยาลัย ตัวอย่าง',
-      year: '2566',
-      details: '',
-    },
-  ],
-  skills: ['Skill 1', 'Skill 2', 'Skill 3'],
-};
-
-export default function App() {
-  const [data, setData] = useState(defaultData);
-
-  // Handlers for personal info
-  const updatePersonal = (field, value) => {
-    setData((d) => ({ ...d, personal: { ...d.personal, [field]: value } }));
-  };
-
-  // Experiences handlers
-  const addExperience = () => {
-    setData((d) => ({
-      ...d,
-      experiences: [
-        ...d.experiences,
-        { id: Date.now(), role: '', company: '', start: '', end: '', details: '' },
-      ],
-    }));
-  };
-
-  const updateExperience = (id, field, value) => {
-    setData((d) => ({
-      ...d,
-      experiences: d.experiences.map((ex) => (ex.id === id ? { ...ex, [field]: value } : ex)),
-    }));
-  };
-
-  const removeExperience = (id) => {
-    setData((d) => ({ ...d, experiences: d.experiences.filter((ex) => ex.id !== id) }));
-  };
-
-  // Education handlers
-  const addEducation = () => {
-    setData((d) => ({
-      ...d,
-      education: [...d.education, { id: Date.now(), degree: '', school: '', year: '', details: '' }],
-    }));
-  };
-
-  const updateEducation = (id, field, value) => {
-    setData((d) => ({
-      ...d,
-      education: d.education.map((ed) => (ed.id === id ? { ...ed, [field]: value } : ed)),
-    }));
-  };
-
-  const removeEducation = (id) => {
-    setData((d) => ({ ...d, education: d.education.filter((ed) => ed.id !== id) }));
-  };
-
-  // Skills
-  const addSkill = (skill) => {
-    if (!skill) return;
-    setData((d) => ({ ...d, skills: [...d.skills, skill] }));
-  };
-
-  const removeSkill = (index) => {
-    setData((d) => ({ ...d, skills: d.skills.filter((_, i) => i !== index) }));
-  };
-
-  // Reset to template
-  const resetTemplate = () => setData(defaultData);
-
-  // Print/export
-  const handlePrint = () => {
-    window.print();
-  };
-
-  return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Left: Editor */}
-        <div className="space-y-4">
-          <header className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold">Resume Editor</h1>
-            <div className="flex gap-2">
-              <button
-                onClick={resetTemplate}
-                className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300"
-              >
-                Reset
-              </button>
-              <button
-                onClick={handlePrint}
-                className="px-3 py-1 rounded bg-blue-600 text-white hover:opacity-90"
-              >
-                Export / Print
-              </button>
-            </div>
-          </header>
-
-          <section className="bg-white p-4 rounded shadow">
-            <h2 className="font-semibold mb-2">Personal Information</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <input
-                value={data.personal.fullName}
-                onChange={(e) => updatePersonal('fullName', e.target.value)}
-                className="border p-2 rounded"
-                placeholder="Full name"
-              />
-              <input
-                value={data.personal.title}
-                onChange={(e) => updatePersonal('title', e.target.value)}
-                className="border p-2 rounded"
-                placeholder="Desired position"
-              />
-              <input
-                value={data.personal.email}
-                onChange={(e) => updatePersonal('email', e.target.value)}
-                className="border p-2 rounded"
-                placeholder="Email"
-              />
-              <input
-                value={data.personal.phone}
-                onChange={(e) => updatePersonal('phone', e.target.value)}
-                className="border p-2 rounded"
-                placeholder="Phone"
-              />
-              <input
-                value={data.personal.location}
-                onChange={(e) => updatePersonal('location', e.target.value)}
-                className="border p-2 rounded col-span-1 sm:col-span-2"
-                placeholder="Location"
-              />
-              <textarea
-                value={data.personal.summary}
-                onChange={(e) => updatePersonal('summary', e.target.value)}
-                className="border p-2 rounded col-span-1 sm:col-span-2"
-                rows={4}
-                placeholder="Short summary / objective"
-              />
-            </div>
-          </section>
-
-          <section className="bg-white p-4 rounded shadow">
-            <div className="flex items-center justify-between mb-2">
-              <h2 className="font-semibold">Experience</h2>
-              <button onClick={addExperience} className="text-sm px-2 py-1 bg-green-500 text-white rounded">
-                + Add
-              </button>
-            </div>
-            <div className="space-y-3">
-              {data.experiences.map((ex) => (
-                <div key={ex.id} className="border p-3 rounded">
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                    <input
-                      value={ex.role}
-                      onChange={(e) => updateExperience(ex.id, 'role', e.target.value)}
-                      className="border p-2 rounded col-span-2"
-                      placeholder="Role"
-                    />
-                    <input
-                      value={ex.company}
-                      onChange={(e) => updateExperience(ex.id, 'company', e.target.value)}
-                      className="border p-2 rounded"
-                      placeholder="Company"
-                    />
-                    <input
-                      value={ex.start}
-                      onChange={(e) => updateExperience(ex.id, 'start', e.target.value)}
-                      className="border p-2 rounded"
-                      placeholder="Start (YYYY-MM)"
-                    />
-                    <input
-                      value={ex.end}
-                      onChange={(e) => updateExperience(ex.id, 'end', e.target.value)}
-                      className="border p-2 rounded"
-                      placeholder="End or 'Present'"
-                    />
-                    <textarea
-                      value={ex.details}
-                      onChange={(e) => updateExperience(ex.id, 'details', e.target.value)}
-                      className="border p-2 rounded col-span-1 sm:col-span-3"
-                      rows={3}
-                      placeholder="Key responsibilities / achievements"
-                    />
-                  </div>
-                  <div className="mt-2 text-right">
-                    <button
-                      onClick={() => removeExperience(ex.id)}
-                      className="text-sm text-red-600 hover:underline"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          <section className="bg-white p-4 rounded shadow">
-            <div className="flex items-center justify-between mb-2">
-              <h2 className="font-semibold">Education</h2>
-              <button onClick={addEducation} className="text-sm px-2 py-1 bg-green-500 text-white rounded">
-                + Add
-              </button>
-            </div>
-            <div className="space-y-3">
-              {data.education.map((ed) => (
-                <div key={ed.id} className="border p-3 rounded">
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                    <input
-                      value={ed.degree}
-                      onChange={(e) => updateEducation(ed.id, 'degree', e.target.value)}
-                      className="border p-2 rounded col-span-2"
-                      placeholder="Degree / Program"
-                    />
-                    <input
-                      value={ed.school}
-                      onChange={(e) => updateEducation(ed.id, 'school', e.target.value)}
-                      className="border p-2 rounded"
-                      placeholder="School"
-                    />
-                    <input
-                      value={ed.year}
-                      onChange={(e) => updateEducation(ed.id, 'year', e.target.value)}
-                      className="border p-2 rounded"
-                      placeholder="Year"
-                    />
-                    <textarea
-                      value={ed.details}
-                      onChange={(e) => updateEducation(ed.id, 'details', e.target.value)}
-                      className="border p-2 rounded col-span-1 sm:col-span-3"
-                      rows={2}
-                      placeholder="Notes / honors"
-                    />
-                  </div>
-                  <div className="mt-2 text-right">
-                    <button onClick={() => removeEducation(ed.id)} className="text-sm text-red-600 hover:underline">
-                      Remove
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          <section className="bg-white p-4 rounded shadow">
-            <h2 className="font-semibold mb-2">Skills</h2>
-            <SkillEditor skills={data.skills} addSkill={addSkill} removeSkill={removeSkill} />
-          </section>
+    <main>
+      <div>
+        <div class="card">
+          <div class="section-title">สรุปตัวเอง</div>
+          <p class="muted" id="summary">นักศึกษาที่มีความตั้งใจในการเรียนรู้และพร้อมทำงานในสภาพแวดล้อมที่ต้องการพัฒนาทักษะ มีประสบการณ์ปฏิบัติงานฝึกงาน และมีทักษะด้านการสื่อสารและการทำงานเป็นทีม</p>
         </div>
 
-        {/* Right: Preview */}
-        <div className="bg-white p-6 rounded shadow print:bg-white" id="resume-preview">
-          <ResumePrintView data={data} />
+        <div class="card" style="margin-top:16px">
+          <div class="section-title">ประสบการณ์การทำงาน / ฝึกงาน</div>
+          <ul class="list" id="experienceList">
+            <li class="item">
+              <div style="display:flex;justify-content:space-between;align-items:center"><strong>นักศึกษาฝึกงาน</strong><span class="meta">มิ.ย. 2566 – ส.ค. 2566</span></div>
+              <div class="muted">บริษัท ตัวอย่าง จำกัด — ทำงานร่วมทีมพัฒนาโปรเจกต์และเตรียมเอกสาร</div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="card" style="margin-top:16px">
+          <div class="section-title">การศึกษา</div>
+          <ul class="list">
+            <li class="item">
+              <strong>ปริญญาตรี (สาขาที่ศึกษา)</strong>
+              <div class="meta">มหาวิทยาลัย ตัวอย่าง • 2562 - ปัจจุบัน</div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="card" style="margin-top:16px">
+          <div class="section-title">ผลงาน / โครงการ</div>
+          <ul class="list" id="projects">
+            <li class="item"><strong>โครงการตัวอย่าง</strong><div class="muted">คำอธิบายสั้น ๆ ของโครงการ</div></li>
+          </ul>
         </div>
       </div>
 
-      {/* Print style tweaks (simple) */}
-      <style>{`@media print { body { -webkit-print-color-adjust: exact; } .no-print { display: none !important; } .print\:bg-white { background: white !important } }`}</style>
-    </div>
-  );
-}
-
-function SkillEditor({ skills, addSkill, removeSkill }) {
-  const [input, setInput] = useState('');
-  return (
-    <div>
-      <div className="flex gap-2">
-        <input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          className="border p-2 rounded flex-1"
-          placeholder="Add a skill and press Enter"
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              addSkill(input.trim());
-              setInput('');
-            }
-          }}
-        />
-        <button
-          onClick={() => {
-            addSkill(input.trim());
-            setInput('');
-          }}
-          className="px-3 py-1 bg-blue-600 text-white rounded"
-        >
-          Add
-        </button>
-      </div>
-      <div className="mt-3 flex flex-wrap gap-2">
-        {skills.map((s, i) => (
-          <div key={i} className="px-3 py-1 border rounded flex items-center gap-2">
-            <span>{s}</span>
-            <button onClick={() => removeSkill(i)} className="text-red-500 text-sm">
-              ×
-            </button>
+      <aside>
+        <div class="card">
+          <div class="section-title">ทักษะ</div>
+          <div id="skills">
+            <span class="chip">HTML</span><span class="chip">CSS</span><span class="chip">JavaScript</span><span class="chip">การสื่อสาร</span>
           </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function ResumePrintView({ data }) {
-  const { personal, experiences, education, skills } = data;
-  return (
-    <div className="text-gray-900">
-      <div className="flex items-start justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">{personal.fullName}</h1>
-          <div className="text-sm text-gray-700">{personal.title}</div>
         </div>
-        <div className="text-right text-sm text-gray-700">
-          <div>{personal.email}</div>
-          <div>{personal.phone}</div>
-          <div>{personal.location}</div>
+
+        <div class="card" style="margin-top:16px">
+          <div class="section-title">ข้อมูลส่วนตัว</div>
+          <div class="muted"><strong>วันเกิด:</strong> 18 พฤษภาคม 2541 (อายุ 27 ปี)</div>
+          <div class="muted" style="margin-top:8px"><strong>ที่อยู่:</strong> 705/13 ถ.พิชัยรณรงค์สงคราม ต.ปากพรียว อ.เมือง จ.สระบุรี 18000</div>
+          <div class="muted" style="margin-top:8px"><strong>โทร:</strong> 099-164-6545</div>
         </div>
-      </div>
 
-      <hr className="my-3" />
-
-      <section className="mb-3">
-        <h3 className="font-semibold">Summary</h3>
-        <p className="text-sm text-gray-800">{personal.summary}</p>
-      </section>
-
-      <section className="mb-3">
-        <h3 className="font-semibold">Experience</h3>
-        <div className="space-y-3">
-          {experiences.map((ex) => (
-            <div key={ex.id}>
-              <div className="flex justify-between">
-                <div className="font-medium">{ex.role} — {ex.company}</div>
-                <div className="text-sm text-gray-700">{ex.start} — {ex.end}</div>
-              </div>
-              <div className="text-sm text-gray-800">{ex.details}</div>
-            </div>
-          ))}
+        <div class="card" style="margin-top:16px">
+          <div class="section-title">ลิงก์</div>
+          <div class="muted">GitHub: — | LinkedIn: —</div>
         </div>
-      </section>
+      </aside>
+    </main>
+  </div>
 
-      <section className="mb-3">
-        <h3 className="font-semibold">Education</h3>
-        <div className="space-y-2">
-          {education.map((ed) => (
-            <div key={ed.id}>
-              <div className="flex justify-between">
-                <div className="font-medium">{ed.degree} — {ed.school}</div>
-                <div className="text-sm text-gray-700">{ed.year}</div>
-              </div>
-              <div className="text-sm text-gray-800">{ed.details}</div>
-            </div>
-          ))}
-        </div>
-      </section>
+  <!-- เลือกใช้ html2pdf เพื่อดาวน์โหลดเป็น PDF แบบง่าย ๆ -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+  <script>
+    // ข้อมูลพื้นฐาน (แก้ไขได้ตรงนี้)
+    const profile = {
+      fullName: 'นาย ธนพนธ์ ลิขิตปัญญาวัฒน์',
+      role: 'นักศึกษา / ผู้สมัครฝึกงาน',
+      contact: '705/13 ถ.พิชัยรณรงค์สงคราม ต.ปากพรียว อ.เมือง จ.สระบุรี 18000 • 099-164-6545 • thanaphon.email@example.com',
+      summary: 'นักศึกษาที่มีความตั้งใจในการเรียนรู้และพร้อมทำงานในสภาพแวดล้อมที่ต้องการพัฒนาทักษะ มีประสบการณ์ปฏิบัติงานฝึกงาน และมีทักษะด้านการสื่อสารและการทำงานเป็นทีม',
+      birth: '18 พฤษภาคม 2541',
+      age: '27 ปี'
+    };
 
-      <section>
-        <h3 className="font-semibold">Skills</h3>
-        <div className="flex flex-wrap gap-2 mt-2">
-          {skills.map((s, i) => (
-            <div key={i} className="px-3 py-1 border rounded text-sm">{s}</div>
-          ))}
-        </div>
-      </section>
-    </div>
-  );
-}
+    // เติมข้อมูลลงหน้า
+    document.getElementById('fullName').textContent = profile.fullName;
+    document.getElementById('role').textContent = profile.role;
+    document.getElementById('contact').textContent = profile.contact;
+    document.getElementById('summary').textContent = profile.summary;
+    document.getElementById('avatar').textContent = (profile.fullName.split(' ')[1] || 'TN').slice(0,2).toUpperCase();
+
+    // ปุ่มดาวน์โหลด PDF
+    document.getElementById('downloadPdf').addEventListener('click', function(){
+      const element = document.getElementById('resume-root');
+      const opt = {
+        margin:       0.2,
+        filename:     (profile.fullName.replace(/\s+/g,'_')) + '_Resume.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true },
+        jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+      };
+      html2pdf().set(opt).from(element).save();
+    });
+
+    document.getElementById('printBtn').addEventListener('click', () => window.print());
+  </script>
+</body>
+</html>
