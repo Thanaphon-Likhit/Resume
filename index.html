@@ -8,24 +8,19 @@
   <style>
     :root{--accent:#2563eb;--muted:#6b7280;--bg:#f7fafc}
     *{box-sizing:border-box}
-    body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial;
-      line-height:1.5;color:#0f172a;margin:0;background:var(--bg)}
-    .container{max-width:900px;margin:28px auto;padding:24px;background:#fff;border-radius:12px;
-      box-shadow:0 6px 18px rgba(2,6,23,0.08)}
+    body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial;line-height:1.5;color:#0f172a;margin:0;background:var(--bg)}
+    .container{max-width:900px;margin:28px auto;padding:24px;background:#fff;border-radius:12px;box-shadow:0 6px 18px rgba(2,6,23,0.08)}
     header{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
-    .avatar{width:110px;height:110px;border-radius:10px;background:linear-gradient(135deg,#e0f2fe,#fff);
-      display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent);font-size:20px}
+    .avatar{width:110px;height:110px;border-radius:10px;background:linear-gradient(135deg,#e0f2fe,#fff);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent);font-size:20px}
     h1{margin:0;font-size:24px}
     .sub{color:var(--muted);margin-top:4px}
     .actions{margin-left:auto;display:flex;gap:8px}
-    button{background:var(--accent);color:#fff;border:none;padding:8px 12px;border-radius:8px;
-      cursor:pointer;font-weight:600}
+    button{background:var(--accent);color:#fff;border:none;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:600}
     button.outline{background:transparent;color:var(--accent);border:1px solid rgba(37,99,235,0.3)}
     main{display:grid;grid-template-columns:1fr 320px;gap:24px;margin-top:20px}
     .card{padding:16px;border-radius:10px;background:#fff}
     .section-title{font-weight:700;margin-bottom:10px;color:#111827}
-    .chip{display:inline-block;padding:6px 10px;border-radius:999px;background:#eef2ff;color:#3730a3;
-      margin:6px 6px 0 0;font-size:13px}
+    .chip{display:inline-block;padding:6px 10px;border-radius:999px;background:#eef2ff;color:#3730a3;margin:6px 6px 0 0;font-size:13px}
     .muted{color:var(--muted);font-size:14px}
     .list{margin:0;padding:0;list-style:none}
     li.item{padding:12px 0;border-bottom:1px dashed #eef2ff}
@@ -41,9 +36,7 @@
       <div>
         <h1 id="fullName">นาย ธนพนธ์ ลิขิตปัญญาวัฒน์</h1>
         <div class="sub" id="role">นักศึกษา / ผู้สมัครฝึกงาน</div>
-        <div class="muted" id="contact">
-          705/13 ถ.พิชัยรณรงค์สงคราม ต.ปากพรียว อ.เมือง จ.สระบุรี 18000 • 099-164-6545 • thanaphon.email@example.com
-        </div>
+        <div class="muted" id="contact">705/13 ถ.พิชัยรณรงค์สงคราม ต.ปากเพรียว อ.เมือง จ.สระบุรี 18000 • 099-164-6545 • piero_tr@hotmail.co.th / thanaphon.likhit@gmail.com</div>
       </div>
       <div class="actions">
         <button id="downloadPdf">ดาวน์โหลด PDF</button>
@@ -55,20 +48,19 @@
       <div>
         <div class="card">
           <div class="section-title">สรุปตัวเอง</div>
-          <p class="muted" id="summary">
-            นักศึกษาที่มีความตั้งใจในการเรียนรู้และพร้อมทำงานในสภาพแวดล้อมที่ต้องการพัฒนาทักษะ
-            มีประสบการณ์ปฏิบัติงานฝึกงาน และมีทักษะด้านการสื่อสารและการทำงานเป็นทีม
-          </p>
+          <p class="muted" id="summary">นักศึกษาที่มีความตั้งใจในการเรียนรู้และพร้อมทำงาน มีประสบการณ์ฝึกงานและทำงานในอุตสาหกรรมอาหารและน้ำมัน มีทักษะด้านการสื่อสารและการทำงานเป็นทีม</p>
         </div>
 
         <div class="card" style="margin-top:16px">
           <div class="section-title">ประสบการณ์การทำงาน / ฝึกงาน</div>
           <ul class="list" id="experienceList">
             <li class="item">
-              <div style="display:flex;justify-content:space-between;align-items:center">
-                <strong>นักศึกษาฝึกงาน</strong><span class="meta">มิ.ย. 2566 – ส.ค. 2566</span>
-              </div>
-              <div class="muted">บริษัท ตัวอย่าง จำกัด — ทำงานร่วมทีมพัฒนาโปรเจกต์และเตรียมเอกสาร</div>
+              <div style="display:flex;justify-content:space-between;align-items:center"><strong>ฝึกงานน้ำมันและการค้าปลีกจำกัดมหาชน (PTTOR)</strong><span class="meta">4 ปี (ระบบทวิภาคี)</span></div>
+              <div class="muted">ฝึกงานในสายงานต่าง ๆ พร้อมเรียนรู้การปฏิบัติงานจริง</div>
+            </li>
+            <li class="item">
+              <div style="display:flex;justify-content:space-between;align-items:center"><strong>หัวหน้าคุมไลน์ผลิต เครือเจริญโภคภัณฑ์ อาหาร CPF</strong><span class="meta">6 เดือน</span></div>
+              <div class="muted">ดูแลการผลิตและประสานงานทีมงานในสายการผลิต</div>
             </li>
           </ul>
         </div>
@@ -77,17 +69,8 @@
           <div class="section-title">การศึกษา</div>
           <ul class="list">
             <li class="item">
-              <strong>ปริญญาตรี (สาขาที่ศึกษา)</strong>
-              <div class="meta">มหาวิทยาลัย ตัวอย่าง • 2562 - ปัจจุบัน</div>
-            </li>
-          </ul>
-        </div>
-
-        <div class="card" style="margin-top:16px">
-          <div class="section-title">ผลงาน / โครงการ</div>
-          <ul class="list" id="projects">
-            <li class="item"><strong>โครงการตัวอย่าง</strong>
-              <div class="muted">คำอธิบายสั้น ๆ ของโครงการ</div>
+              <strong>ปวส. วิทยาลัยเทคนิคท่าหลวงซิเมนต์ไทยอนุสรณ์</strong>
+              <div class="meta">แผนก เทคนิคอุตสาหกรรม สาขา เทคโนโลยีวิศวกรรมซ่อมบำรุงอุตสาหกรรม • เกรดเฉลี่ย 3.15 • จบวันที่ 16 มีนาคม 2565</div>
             </li>
           </ul>
         </div>
@@ -107,9 +90,7 @@
         <div class="card" style="margin-top:16px">
           <div class="section-title">ข้อมูลส่วนตัว</div>
           <div class="muted"><strong>วันเกิด:</strong> 18 พฤษภาคม 2541 (อายุ 27 ปี)</div>
-          <div class="muted" style="margin-top:8px">
-            <strong>ที่อยู่:</strong> 705/13 ถ.พิชัยรณรงค์สงคราม ต.ปากพรียว อ.เมือง จ.สระบุรี 18000
-          </div>
+          <div class="muted" style="margin-top:8px"><strong>ที่อยู่:</strong> 705/13 ถ.พิชัยรณรงค์สงคราม ต.ปากเพรียว อ.เมือง จ.สระบุรี 18000</div>
           <div class="muted" style="margin-top:8px"><strong>โทร:</strong> 099-164-6545</div>
         </div>
 
