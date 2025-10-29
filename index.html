@@ -1,0 +1,429 @@
+/*
+Resume Website (single-file React component)
+
+How to use:
+1. Create a new Vite React project (recommended):
+   npm create vite@latest resume-site -- --template react
+   cd resume-site
+   npm install
+
+2. Install Tailwind CSS (follow Tailwind docs) or set up your preferred styling.
+   Quick setup (Tailwind):
+   npm install -D tailwindcss postcss autoprefixer
+   npx tailwindcss init -p
+   // then configure tailwind.config.js and add @tailwind directives to index.css
+
+3. Replace src/App.jsx with this file's content. Run:
+   npm run dev
+
+4. To push to GitHub:
+   git init
+   git add .
+   git commit -m "Initial resume site"
+   gh repo create <repo-name> --public --source=. --remote=origin
+   git push -u origin main
+
+This component implements:
+- Editable resume form (personal info, summary, experience, education, skills)
+- Live preview on the right
+- Export/Print (uses window.print for PDF export)
+- Simple responsive layout styled with Tailwind classes
+
+Notes:
+- This is a single-file component for convenience. In a production app split into smaller components.
+- If you want a downloadable PDF with precise layout, consider adding html2pdf.js or jsPDF.
+*/
+
+import React, { useState } from 'react';
+
+const defaultData = {
+  personal: {
+    fullName: 'ชื่อ-นามสกุล / Full Name',
+    title: 'ตำแหน่งที่ต้องการ / Desired Position',
+    email: 'you@example.com',
+    phone: '099-999-9999',
+    location: 'จังหวัด, ประเทศ',
+    summary:
+      'สรุปสั้นๆ เกี่ยวกับตัวคุณ — ประสบการณ์สำคัญ ทักษะเด่น และเป้าหมายในการทำงาน',
+  },
+  experiences: [
+    {
+      id: Date.now(),
+      role: 'ตำแหน่ง — บริษัท',
+      company: 'บริษัท ตัวอย่าง',
+      start: '2023-01',
+      end: 'ปัจจุบัน',
+      details: 'อธิบายผลงาน/ความรับผิดชอบสำคัญ 2-3 ข้อ',
+    },
+  ],
+  education: [
+    {
+      id: Date.now() + 1,
+      degree: 'ปริญญาตรี สาขา',
+      school: 'มหาวิทยาลัย ตัวอย่าง',
+      year: '2566',
+      details: '',
+    },
+  ],
+  skills: ['Skill 1', 'Skill 2', 'Skill 3'],
+};
+
+export default function App() {
+  const [data, setData] = useState(defaultData);
+
+  // Handlers for personal info
+  const updatePersonal = (field, value) => {
+    setData((d) => ({ ...d, personal: { ...d.personal, [field]: value } }));
+  };
+
+  // Experiences handlers
+  const addExperience = () => {
+    setData((d) => ({
+      ...d,
+      experiences: [
+        ...d.experiences,
+        { id: Date.now(), role: '', company: '', start: '', end: '', details: '' },
+      ],
+    }));
+  };
+
+  const updateExperience = (id, field, value) => {
+    setData((d) => ({
+      ...d,
+      experiences: d.experiences.map((ex) => (ex.id === id ? { ...ex, [field]: value } : ex)),
+    }));
+  };
+
+  const removeExperience = (id) => {
+    setData((d) => ({ ...d, experiences: d.experiences.filter((ex) => ex.id !== id) }));
+  };
+
+  // Education handlers
+  const addEducation = () => {
+    setData((d) => ({
+      ...d,
+      education: [...d.education, { id: Date.now(), degree: '', school: '', year: '', details: '' }],
+    }));
+  };
+
+  const updateEducation = (id, field, value) => {
+    setData((d) => ({
+      ...d,
+      education: d.education.map((ed) => (ed.id === id ? { ...ed, [field]: value } : ed)),
+    }));
+  };
+
+  const removeEducation = (id) => {
+    setData((d) => ({ ...d, education: d.education.filter((ed) => ed.id !== id) }));
+  };
+
+  // Skills
+  const addSkill = (skill) => {
+    if (!skill) return;
+    setData((d) => ({ ...d, skills: [...d.skills, skill] }));
+  };
+
+  const removeSkill = (index) => {
+    setData((d) => ({ ...d, skills: d.skills.filter((_, i) => i !== index) }));
+  };
+
+  // Reset to template
+  const resetTemplate = () => setData(defaultData);
+
+  // Print/export
+  const handlePrint = () => {
+    window.print();
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50 p-6">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Left: Editor */}
+        <div className="space-y-4">
+          <header className="flex items-center justify-between">
+            <h1 className="text-2xl font-bold">Resume Editor</h1>
+            <div className="flex gap-2">
+              <button
+                onClick={resetTemplate}
+                className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300"
+              >
+                Reset
+              </button>
+              <button
+                onClick={handlePrint}
+                className="px-3 py-1 rounded bg-blue-600 text-white hover:opacity-90"
+              >
+                Export / Print
+              </button>
+            </div>
+          </header>
+
+          <section className="bg-white p-4 rounded shadow">
+            <h2 className="font-semibold mb-2">Personal Information</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <input
+                value={data.personal.fullName}
+                onChange={(e) => updatePersonal('fullName', e.target.value)}
+                className="border p-2 rounded"
+                placeholder="Full name"
+              />
+              <input
+                value={data.personal.title}
+                onChange={(e) => updatePersonal('title', e.target.value)}
+                className="border p-2 rounded"
+                placeholder="Desired position"
+              />
+              <input
+                value={data.personal.email}
+                onChange={(e) => updatePersonal('email', e.target.value)}
+                className="border p-2 rounded"
+                placeholder="Email"
+              />
+              <input
+                value={data.personal.phone}
+                onChange={(e) => updatePersonal('phone', e.target.value)}
+                className="border p-2 rounded"
+                placeholder="Phone"
+              />
+              <input
+                value={data.personal.location}
+                onChange={(e) => updatePersonal('location', e.target.value)}
+                className="border p-2 rounded col-span-1 sm:col-span-2"
+                placeholder="Location"
+              />
+              <textarea
+                value={data.personal.summary}
+                onChange={(e) => updatePersonal('summary', e.target.value)}
+                className="border p-2 rounded col-span-1 sm:col-span-2"
+                rows={4}
+                placeholder="Short summary / objective"
+              />
+            </div>
+          </section>
+
+          <section className="bg-white p-4 rounded shadow">
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="font-semibold">Experience</h2>
+              <button onClick={addExperience} className="text-sm px-2 py-1 bg-green-500 text-white rounded">
+                + Add
+              </button>
+            </div>
+            <div className="space-y-3">
+              {data.experiences.map((ex) => (
+                <div key={ex.id} className="border p-3 rounded">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                    <input
+                      value={ex.role}
+                      onChange={(e) => updateExperience(ex.id, 'role', e.target.value)}
+                      className="border p-2 rounded col-span-2"
+                      placeholder="Role"
+                    />
+                    <input
+                      value={ex.company}
+                      onChange={(e) => updateExperience(ex.id, 'company', e.target.value)}
+                      className="border p-2 rounded"
+                      placeholder="Company"
+                    />
+                    <input
+                      value={ex.start}
+                      onChange={(e) => updateExperience(ex.id, 'start', e.target.value)}
+                      className="border p-2 rounded"
+                      placeholder="Start (YYYY-MM)"
+                    />
+                    <input
+                      value={ex.end}
+                      onChange={(e) => updateExperience(ex.id, 'end', e.target.value)}
+                      className="border p-2 rounded"
+                      placeholder="End or 'Present'"
+                    />
+                    <textarea
+                      value={ex.details}
+                      onChange={(e) => updateExperience(ex.id, 'details', e.target.value)}
+                      className="border p-2 rounded col-span-1 sm:col-span-3"
+                      rows={3}
+                      placeholder="Key responsibilities / achievements"
+                    />
+                  </div>
+                  <div className="mt-2 text-right">
+                    <button
+                      onClick={() => removeExperience(ex.id)}
+                      className="text-sm text-red-600 hover:underline"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="bg-white p-4 rounded shadow">
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="font-semibold">Education</h2>
+              <button onClick={addEducation} className="text-sm px-2 py-1 bg-green-500 text-white rounded">
+                + Add
+              </button>
+            </div>
+            <div className="space-y-3">
+              {data.education.map((ed) => (
+                <div key={ed.id} className="border p-3 rounded">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                    <input
+                      value={ed.degree}
+                      onChange={(e) => updateEducation(ed.id, 'degree', e.target.value)}
+                      className="border p-2 rounded col-span-2"
+                      placeholder="Degree / Program"
+                    />
+                    <input
+                      value={ed.school}
+                      onChange={(e) => updateEducation(ed.id, 'school', e.target.value)}
+                      className="border p-2 rounded"
+                      placeholder="School"
+                    />
+                    <input
+                      value={ed.year}
+                      onChange={(e) => updateEducation(ed.id, 'year', e.target.value)}
+                      className="border p-2 rounded"
+                      placeholder="Year"
+                    />
+                    <textarea
+                      value={ed.details}
+                      onChange={(e) => updateEducation(ed.id, 'details', e.target.value)}
+                      className="border p-2 rounded col-span-1 sm:col-span-3"
+                      rows={2}
+                      placeholder="Notes / honors"
+                    />
+                  </div>
+                  <div className="mt-2 text-right">
+                    <button onClick={() => removeEducation(ed.id)} className="text-sm text-red-600 hover:underline">
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="bg-white p-4 rounded shadow">
+            <h2 className="font-semibold mb-2">Skills</h2>
+            <SkillEditor skills={data.skills} addSkill={addSkill} removeSkill={removeSkill} />
+          </section>
+        </div>
+
+        {/* Right: Preview */}
+        <div className="bg-white p-6 rounded shadow print:bg-white" id="resume-preview">
+          <ResumePrintView data={data} />
+        </div>
+      </div>
+
+      {/* Print style tweaks (simple) */}
+      <style>{`@media print { body { -webkit-print-color-adjust: exact; } .no-print { display: none !important; } .print\:bg-white { background: white !important } }`}</style>
+    </div>
+  );
+}
+
+function SkillEditor({ skills, addSkill, removeSkill }) {
+  const [input, setInput] = useState('');
+  return (
+    <div>
+      <div className="flex gap-2">
+        <input
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          className="border p-2 rounded flex-1"
+          placeholder="Add a skill and press Enter"
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              addSkill(input.trim());
+              setInput('');
+            }
+          }}
+        />
+        <button
+          onClick={() => {
+            addSkill(input.trim());
+            setInput('');
+          }}
+          className="px-3 py-1 bg-blue-600 text-white rounded"
+        >
+          Add
+        </button>
+      </div>
+      <div className="mt-3 flex flex-wrap gap-2">
+        {skills.map((s, i) => (
+          <div key={i} className="px-3 py-1 border rounded flex items-center gap-2">
+            <span>{s}</span>
+            <button onClick={() => removeSkill(i)} className="text-red-500 text-sm">
+              ×
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ResumePrintView({ data }) {
+  const { personal, experiences, education, skills } = data;
+  return (
+    <div className="text-gray-900">
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-2xl font-bold">{personal.fullName}</h1>
+          <div className="text-sm text-gray-700">{personal.title}</div>
+        </div>
+        <div className="text-right text-sm text-gray-700">
+          <div>{personal.email}</div>
+          <div>{personal.phone}</div>
+          <div>{personal.location}</div>
+        </div>
+      </div>
+
+      <hr className="my-3" />
+
+      <section className="mb-3">
+        <h3 className="font-semibold">Summary</h3>
+        <p className="text-sm text-gray-800">{personal.summary}</p>
+      </section>
+
+      <section className="mb-3">
+        <h3 className="font-semibold">Experience</h3>
+        <div className="space-y-3">
+          {experiences.map((ex) => (
+            <div key={ex.id}>
+              <div className="flex justify-between">
+                <div className="font-medium">{ex.role} — {ex.company}</div>
+                <div className="text-sm text-gray-700">{ex.start} — {ex.end}</div>
+              </div>
+              <div className="text-sm text-gray-800">{ex.details}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="mb-3">
+        <h3 className="font-semibold">Education</h3>
+        <div className="space-y-2">
+          {education.map((ed) => (
+            <div key={ed.id}>
+              <div className="flex justify-between">
+                <div className="font-medium">{ed.degree} — {ed.school}</div>
+                <div className="text-sm text-gray-700">{ed.year}</div>
+              </div>
+              <div className="text-sm text-gray-800">{ed.details}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section>
+        <h3 className="font-semibold">Skills</h3>
+        <div className="flex flex-wrap gap-2 mt-2">
+          {skills.map((s, i) => (
+            <div key={i} className="px-3 py-1 border rounded text-sm">{s}</div>
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+}
